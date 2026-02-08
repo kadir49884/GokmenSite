@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gökmen İş Elbiseleri - İş Güvenliği Ürünleri</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: #fafbfc;
+            color: #2d3748;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-top {
+            background: #2d3748;
+            color: white;
+            padding: 8px 0;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .header-main {
+            padding: 18px 0;
+        }
+
+        .header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #2d3748;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-accent {
+            color: #10b981;
+        }
+
+        .header-contact {
+            display: flex;
+            gap: 25px;
+            font-size: 0.9rem;
+        }
+
+        .header-contact a {
+            color: #718096;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .header-contact a:hover {
+            color: #10b981;
+        }
+
+        .banner {
+            background: linear-gradient(120deg, #10b981 0%, #059669 100%);
+            padding: 90px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .banner-title {
+            font-size: 3.2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .banner-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 75px 20px;
+        }
+
+        .content-title {
+            text-align: center;
+            margin-bottom: 55px;
+        }
+
+        .content-title h2 {
+            font-size: 2.3rem;
+            color: #1a202c;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .content-title p {
+            font-size: 1.05rem;
+            color: #718096;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 28px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+            border-color: #10b981;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 310px;
+            background: #f7fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 18px;
+            transition: transform 0.35s ease;
+        }
+
+        .card:hover .card-image img {
+            transform: scale(1.06);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 14px;
+            line-height: 1.5;
+            height: 45px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-price {
+            font-size: 23px;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .footer {
+            background: #1a202c;
+            color: white;
+            padding: 65px 20px 28px;
+            margin-top: 90px;
+        }
+
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 45px;
+            margin-bottom: 35px;
+        }
+
+        .footer-block h3 {
+            font-size: 1.15rem;
+            margin-bottom: 18px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .footer-block p,
+        .footer-block a {
+            color: #cbd5e0;
+            text-decoration: none;
+            line-height: 1.85;
+            font-size: 0.95rem;
+        }
+
+        .footer-block a:hover {
+            color: #10b981;
+        }
+
+        .contact-group {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .contact-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .social-media {
+            display: flex;
+            gap: 11px;
+            margin-top: 18px;
+        }
+
+        .social-media a {
+            width: 44px;
+            height: 44px;
+            background: #2d3748;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            font-size: 1.15rem;
+        }
+
+        .social-media a:hover {
+            background: #10b981;
+            transform: translateY(-3px);
+        }
+
+        .footer-end {
+            text-align: center;
+            padding-top: 28px;
+            margin-top: 28px;
+            border-top: 1px solid #2d3748;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 992px) {
+            .banner-title {
+                font-size: 2.4rem;
+            }
+
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                gap: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-contact {
+                display: none;
+            }
+
+            .banner {
+                padding: 65px 20px;
+            }
+
+            .banner-title {
+                font-size: 1.95rem;
+            }
+
+            .banner-subtitle {
+                font-size: 1rem;
+            }
+
+            .content {
+                padding: 55px 18px;
+            }
+
+            .content-title h2 {
+                font-size: 1.85rem;
+            }
+
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+                gap: 18px;
+            }
+
+            .card-image {
+                height: 200px;
+            }
+
+            .card-body {
+                padding: 16px;
+            }
+
+            .card-name {
+                font-size: 14px;
+                height: 42px;
+            }
+
+            .card-price {
+                font-size: 18px;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .footer {
+                margin-top: 65px;
+                padding: 45px 18px 22px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-image {
+                height: 270px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-top">
+            ✉️ info@gokmeniselbiseleri.com | 📞 +90 555 123 45 67
+        </div>
+        <div class="header-main">
+            <div class="header-content">
+                <div class="logo">
+                    GÖKMEN <span class="logo-accent">İŞ ELBİSELERİ</span>
+                </div>
+                <div class="header-contact">
+                    <a href="tel:+905551234567">📞 Telefon</a>
+                    <a href="mailto:info@gokmeniselbiseleri.com">✉️ E-posta</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="banner">
+        <h1 class="banner-title">İş Güvenliği Ürünleri</h1>
+        <p class="banner-subtitle">Profesyonel kalite, güvenilir çözümler</p>
+    </section>
+
+    <main class="content">
+        <div class="content-title">
+            <h2>Ürün Kataloğu</h2>
+            <p>İhtiyacınız olan tüm iş güvenliği ürünleri</p>
+        </div>
+        <div class="grid" id="productList"></div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-block">
+                <h3>Gökmen İş Elbiseleri</h3>
+                <p>İş güvenliği ve koruyucu ekipman alanında profesyonel çözümler sunuyoruz. Kaliteli ürünler ve güvenilir hizmet anlayışımızla yanınızdayız.</p>
+            </div>
+
+            <div class="footer-block">
+                <h3>İletişim</h3>
+                <div class="contact-group">
+                    <div class="contact-line">
+                        <span>📞</span>
+                        <a href="tel:+905551234567">+90 555 123 45 67</a>
+                    </div>
+                    <div class="contact-line">
+                        <span>✉️</span>
+                        <a href="mailto:info@gokmeniselbiseleri.com">info@gokmeniselbiseleri.com</a>
+                    </div>
+                    <div class="contact-line">
+                        <span>📍</span>
+                        <p>İstanbul, Türkiye</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-block">
+                <h3>Sosyal Medya</h3>
+                <div class="social-media">
+                    <a href="#" aria-label="Facebook">📘</a>
+                    <a href="#" aria-label="Instagram">📷</a>
+                    <a href="#" aria-label="Twitter">🐦</a>
+                    <a href="#" aria-label="LinkedIn">💼</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-end">
+            <p>&copy; 2024 Gökmen İş Elbiseleri. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <script>
+        const products = [
+            {
+                id: 1,
+                name: "Vizwell VWJ.K67-L 150D Reflektörlü Oxford Yağmurluk Turuncu",
+                price: "1,200,00 TL",
+                image: "images/image1.png"
+            },
+            {
+                id: 2,
+                name: "Vizwell VWJ.K67-L 150D Reflektörlü Yağmurluk SARI",
+                price: "1,200,00 TL",
+                image: "images/image2.png"
+            },
+            {
+                id: 3,
+                name: "Vizwell VWJ.K67+68 150D Oxford Reflektörlü Takım Yağmurluk Sarı Turuncu",
+                price: "1,725,00 TL",
+                image: "images/image3.png"
+            },
+            {
+                id: 4,
+                name: "Vizwell VWJ.K67+68 150D Oxford Reflektörlü Takım Yağmurluk Turuncu",
+                price: "1,725,00 TL",
+                image: "images/image4.png"
+            },
+            {
+                id: 5,
+                name: "İş Güvenliği Reflektörlü Mont Turuncu",
+                price: "850,00 TL",
+                image: "images/image5.png"
+            },
+            {
+                id: 6,
+                name: "İş Güvenliği Reflektörlü Yelek Sarı",
+                price: "450,00 TL",
+                image: "images/image6.png"
+            },
+            {
+                id: 7,
+                name: "Reflektörlü İş Pantolonu Turuncu",
+                price: "675,00 TL",
+                image: "images/image7.png"
+            },
+            {
+                id: 8,
+                name: "Kışlık Reflektörlü İş Montu Sarı",
+                price: "1,350,00 TL",
+                image: "images/image8.png"
+            },
+            {
+                id: 9,
+                name: "İş Güvenliği Reflektörlü Ceket",
+                price: "925,00 TL",
+                image: "images/image9.png"
+            },
+            {
+                id: 10,
+                name: "Profesyonel İş Güvenlik Takımı",
+                price: "2,150,00 TL",
+                image: "images/image10.png"
+            }
+        ];
+
+        function renderProducts() {
+            const productList = document.getElementById('productList');
+            
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                card.innerHTML = `
+                    <div class="card-image">
+                        <img src="${product.image}" alt="${product.name}">
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-name">${product.name}</h3>
+                        <p class="card-price">${product.price}</p>
+                    </div>
+                `;
+                
+                productList.appendChild(card);
+            });
+        }
+
+        renderProducts();
+    </script>
+</body>
+</html>
