@@ -128,7 +128,21 @@
 
         .section-title {
             text-align: center;
-            margin-bottom: 65px;
+            margin-bottom: 40px;
+            position: relative;
+            padding-bottom: 25px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #ff6b35, transparent);
+            border-radius: 2px;
         }
 
         .section-title h2 {
@@ -143,6 +157,7 @@
             font-size: 1.15rem;
             color: #64748b;
             font-weight: 400;
+            margin-bottom: 0;
         }
 
         .products-container {
@@ -341,6 +356,16 @@
 
             .main-section {
                 padding: 65px 18px;
+            }
+
+            .section-title {
+                margin-bottom: 30px;
+                padding-bottom: 20px;
+            }
+
+            .section-title::after {
+                width: 60px;
+                height: 3px;
             }
 
             .section-title h2 {
