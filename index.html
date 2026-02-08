@@ -486,63 +486,64 @@
         const products = [
             {
                 id: 1,
-                name: "Vizwell VWJ.K67-L 150D Reflektörlü Oxford Yağmurluk Turuncu",
-                price: "1,200,00 TL",
-                image: "images/image1.png"
+                name: "Vizwell İki Renkli Reflektörlü Kapitoneli Parka",
+                price: "1,850,00 TL",
+                image: "images/Vizwell_VWJK05_300D_Oxford_Iki_Renkli_Reflektorlu_Ici_Kapitoneli_Parka_TUR.jpg"
             },
             {
                 id: 2,
-                name: "Vizwell VWJ.K67-L 150D Reflektörlü Yağmurluk SARI",
+                name: "İş Güvenliği Reflektörlü Mont",
                 price: "1,200,00 TL",
-                image: "images/image2.png"
+                image: "images/dsdsadsa.jpg"
             },
             {
                 id: 3,
-                name: "Vizwell VWJ.K67+68 150D Oxford Reflektörlü Takım Yağmurluk Sarı Turuncu",
-                price: "1,725,00 TL",
-                image: "images/image3.png"
+                name: "Reflektörlü İş Elbisesi",
+                price: "1,450,00 TL",
+                image: "images/idsadsandir.jpg"
             },
             {
                 id: 4,
-                name: "Vizwell VWJ.K67+68 150D Oxford Reflektörlü Takım Yağmurluk Turuncu",
-                price: "1,725,00 TL",
-                image: "images/image4.png"
+                name: "İş Güvenliği Yelek",
+                price: "850,00 TL",
+                image: "images/inaaaaaaaaadir.jpg"
             },
             {
                 id: 5,
-                name: "İş Güvenliği Reflektörlü Mont Turuncu",
-                price: "850,00 TL",
-                image: "images/image5.png"
+                name: "Reflektörlü İş Pantolonu",
+                price: "750,00 TL",
+                image: "images/inddsadsair.jpg"
             },
             {
                 id: 6,
-                name: "İş Güvenliği Reflektörlü Yelek Sarı",
-                price: "450,00 TL",
-                image: "images/image6.png"
+                name: "İş Güvenliği Ceket",
+                price: "1,150,00 TL",
+                image: "images/indsadadir.jpg"
             },
             {
                 id: 7,
-                name: "Reflektörlü İş Pantolonu Turuncu",
-                price: "675,00 TL",
-                image: "images/image7.png"
+                name: "Kışlık Reflektörlü Mont",
+                price: "1,650,00 TL",
+                image: "images/indsadasdir.jpg"
             },
             {
                 id: 8,
-                name: "Kışlık Reflektörlü İş Montu Sarı",
+                name: "İş Güvenliği Tulum",
                 price: "1,350,00 TL",
-                image: "images/image8.png"
+                image: "images/indsadir.jpg"
             },
             {
                 id: 9,
-                name: "İş Güvenliği Reflektörlü Ceket",
-                price: "925,00 TL",
-                image: "images/image9.png"
+                name: "Profesyonel İş Elbisesi",
+                price: "1,550,00 TL",
+                image: "images/indsadsadir.jpg"
             },
             {
                 id: 10,
-                name: "Profesyonel İş Güvenlik Takımı",
-                price: "2,150,00 TL",
-                image: "images/image10.png"
+                name: "Ürün Tanıtım Videosu",
+                price: "İzlemek için tıklayın",
+                image: "images/video54354.mp4",
+                isVideo: true
             }
         ];
 
@@ -553,15 +554,30 @@
                 const card = document.createElement('div');
                 card.className = 'product-box';
                 
-                card.innerHTML = `
-                    <div class="product-visual">
-                        <img src="${product.image}" alt="${product.name}">
-                    </div>
-                    <div class="product-content">
-                        <h3 class="product-heading">${product.name}</h3>
-                        <p class="product-amount">${product.price}</p>
-                    </div>
-                `;
+                if (product.isVideo) {
+                    card.innerHTML = `
+                        <div class="product-visual">
+                            <video controls style="width: 100%; height: 100%; object-fit: cover;">
+                                <source src="${product.image}" type="video/mp4">
+                                Tarayıcınız video etiketini desteklemiyor.
+                            </video>
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-heading">${product.name}</h3>
+                            <p class="product-amount">${product.price}</p>
+                        </div>
+                    `;
+                } else {
+                    card.innerHTML = `
+                        <div class="product-visual">
+                            <img src="${product.image}" alt="${product.name}">
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-heading">${product.name}</h3>
+                            <p class="product-amount">${product.price}</p>
+                        </div>
+                    `;
+                }
                 
                 productList.appendChild(card);
             });
