@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gökmen İş Elbiseleri - İş Güvenliği Ürünleri</title>
+    <title>Gökmen İş Elbiseleri - Profesyonel İş Güvenliği</title>
     <style>
         * {
             margin: 0;
@@ -12,393 +12,446 @@
         }
 
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background: #fafbfc;
-            color: #2d3748;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(to bottom, #ffffff 0%, #f5f7fa 100%);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            background: #ff6b35;
+            color: white;
+            padding: 12px 0;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .header {
             background: white;
-            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
-            z-index: 1000;
+            z-index: 999;
         }
 
-        .header-top {
-            background: #2d3748;
-            color: white;
-            padding: 8px 0;
-            font-size: 0.85rem;
-            text-align: center;
-        }
-
-        .header-main {
-            padding: 18px 0;
-        }
-
-        .header-content {
-            max-width: 1280px;
+        .header-wrap {
+            max-width: 1300px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 22px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .logo {
-            font-size: 1.75rem;
+        .brand-name {
+            font-size: 1.8rem;
             font-weight: 800;
-            color: #2d3748;
+            color: #1e293b;
             letter-spacing: -0.5px;
         }
 
-        .logo-accent {
-            color: #10b981;
+        .brand-dot {
+            color: #ff6b35;
+            font-size: 2rem;
         }
 
-        .header-contact {
+        .contact-links {
             display: flex;
-            gap: 25px;
-            font-size: 0.9rem;
+            gap: 28px;
+            font-size: 0.92rem;
         }
 
-        .header-contact a {
-            color: #718096;
+        .contact-links a {
+            color: #64748b;
             text-decoration: none;
+            font-weight: 500;
             transition: color 0.2s;
         }
 
-        .header-contact a:hover {
-            color: #10b981;
+        .contact-links a:hover {
+            color: #ff6b35;
         }
 
-        .banner {
-            background: linear-gradient(120deg, #10b981 0%, #059669 100%);
-            padding: 90px 20px;
-            text-align: center;
+        .hero-banner {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             color: white;
+            padding: 95px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
-        .banner-title {
-            font-size: 3.2rem;
-            font-weight: 700;
-            margin-bottom: 16px;
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="none"/><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></svg>');
+            opacity: 0.4;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 3.8rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+            line-height: 1.1;
+        }
+
+        .hero-accent {
+            color: #ff6b35;
+        }
+
+        .hero-description {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            font-weight: 400;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .main-section {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 85px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 65px;
+        }
+
+        .section-title h2 {
+            font-size: 2.6rem;
+            color: #1e293b;
+            margin-bottom: 14px;
+            font-weight: 800;
             letter-spacing: -1px;
         }
 
-        .banner-subtitle {
-            font-size: 1.2rem;
-            opacity: 0.95;
+        .section-title p {
+            font-size: 1.15rem;
+            color: #64748b;
             font-weight: 400;
         }
 
-        .content {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 75px 20px;
-        }
-
-        .content-title {
-            text-align: center;
-            margin-bottom: 55px;
-        }
-
-        .content-title h2 {
-            font-size: 2.3rem;
-            color: #1a202c;
-            margin-bottom: 12px;
-            font-weight: 700;
-        }
-
-        .content-title p {
-            font-size: 1.05rem;
-            color: #718096;
-        }
-
-        .grid {
+        .products-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-            gap: 28px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 35px;
         }
 
-        .card {
+        .product-box {
             background: white;
-            border-radius: 10px;
+            border-radius: 16px;
             overflow: hidden;
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
         }
 
-        .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
-            border-color: #10b981;
+        .product-box:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+            border-color: #ff6b35;
         }
 
-        .card-image {
+        .product-visual {
             width: 100%;
-            height: 310px;
-            background: #f7fafc;
+            height: 330px;
+            background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            position: relative;
         }
 
-        .card-image img {
+        .product-visual::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(to top, rgba(241, 245, 249, 0.6), transparent);
+        }
+
+        .product-visual img {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            padding: 18px;
-            transition: transform 0.35s ease;
+            padding: 22px;
+            transition: transform 0.4s ease;
         }
 
-        .card:hover .card-image img {
-            transform: scale(1.06);
+        .product-box:hover .product-visual img {
+            transform: scale(1.1);
         }
 
-        .card-body {
-            padding: 20px;
+        .product-content {
+            padding: 26px;
         }
 
-        .card-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1a202c;
-            margin-bottom: 14px;
+        .product-heading {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 18px;
             line-height: 1.5;
-            height: 45px;
+            height: 48px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
-        .card-price {
-            font-size: 23px;
-            font-weight: 700;
-            color: #10b981;
+        .product-amount {
+            font-size: 26px;
+            font-weight: 800;
+            color: #ff6b35;
+            letter-spacing: -0.5px;
         }
 
-        .footer {
-            background: #1a202c;
+        .footer-area {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             color: white;
-            padding: 65px 20px 28px;
-            margin-top: 90px;
+            padding: 70px 20px 30px;
+            margin-top: 100px;
         }
 
-        .footer-container {
-            max-width: 1280px;
+        .footer-wrapper {
+            max-width: 1300px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-            gap: 45px;
-            margin-bottom: 35px;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 55px;
+            margin-bottom: 40px;
         }
 
-        .footer-block h3 {
-            font-size: 1.15rem;
-            margin-bottom: 18px;
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 22px;
+            font-weight: 700;
             color: white;
-            font-weight: 600;
         }
 
-        .footer-block p,
-        .footer-block a {
-            color: #cbd5e0;
+        .footer-column p {
+            color: #94a3b8;
+            line-height: 1.9;
+            font-size: 0.96rem;
+        }
+
+        .footer-column a {
+            color: #94a3b8;
             text-decoration: none;
-            line-height: 1.85;
-            font-size: 0.95rem;
+            font-size: 0.96rem;
+            transition: color 0.2s;
         }
 
-        .footer-block a:hover {
-            color: #10b981;
+        .footer-column a:hover {
+            color: #ff6b35;
         }
 
-        .contact-group {
+        .contact-list {
             display: flex;
             flex-direction: column;
-            gap: 13px;
+            gap: 15px;
         }
 
-        .contact-line {
+        .contact-entry {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
-        .social-media {
+        .social-box {
             display: flex;
-            gap: 11px;
-            margin-top: 18px;
+            gap: 13px;
+            margin-top: 22px;
         }
 
-        .social-media a {
-            width: 44px;
-            height: 44px;
-            background: #2d3748;
-            border-radius: 10px;
+        .social-box a {
+            width: 46px;
+            height: 46px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
-            font-size: 1.15rem;
+            font-size: 1.2rem;
         }
 
-        .social-media a:hover {
-            background: #10b981;
-            transform: translateY(-3px);
+        .social-box a:hover {
+            background: #ff6b35;
+            transform: translateY(-4px);
         }
 
-        .footer-end {
+        .footer-copyright {
             text-align: center;
-            padding-top: 28px;
-            margin-top: 28px;
-            border-top: 1px solid #2d3748;
-            color: #718096;
-            font-size: 0.9rem;
+            padding-top: 32px;
+            margin-top: 32px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #64748b;
+            font-size: 0.92rem;
         }
 
-        @media (max-width: 992px) {
-            .banner-title {
-                font-size: 2.4rem;
+        @media (max-width: 1024px) {
+            .products-container {
+                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+                gap: 28px;
             }
 
-            .grid {
-                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-                gap: 24px;
+            .footer-wrapper {
+                grid-template-columns: 1fr 1fr;
+                gap: 42px;
             }
         }
 
         @media (max-width: 768px) {
-            .header-contact {
+            .contact-links {
                 display: none;
             }
 
-            .banner {
-                padding: 65px 20px;
+            .hero-banner {
+                padding: 70px 20px;
             }
 
-            .banner-title {
-                font-size: 1.95rem;
+            .hero-title {
+                font-size: 2.2rem;
             }
 
-            .banner-subtitle {
-                font-size: 1rem;
+            .hero-description {
+                font-size: 1.05rem;
             }
 
-            .content {
-                padding: 55px 18px;
+            .main-section {
+                padding: 65px 18px;
             }
 
-            .content-title h2 {
-                font-size: 1.85rem;
+            .section-title h2 {
+                font-size: 2rem;
             }
 
-            .grid {
-                grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-                gap: 18px;
+            .products-container {
+                grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+                gap: 22px;
             }
 
-            .card-image {
-                height: 200px;
+            .product-visual {
+                height: 210px;
             }
 
-            .card-body {
-                padding: 16px;
+            .product-content {
+                padding: 18px;
             }
 
-            .card-name {
+            .product-heading {
                 font-size: 14px;
                 height: 42px;
             }
 
-            .card-price {
-                font-size: 18px;
+            .product-amount {
+                font-size: 19px;
             }
 
-            .footer-container {
+            .footer-wrapper {
                 grid-template-columns: 1fr;
-                gap: 32px;
+                gap: 35px;
             }
 
-            .footer {
-                margin-top: 65px;
-                padding: 45px 18px 22px;
+            .footer-area {
+                margin-top: 70px;
+                padding: 50px 18px 25px;
             }
         }
 
         @media (max-width: 480px) {
-            .grid {
+            .products-container {
                 grid-template-columns: 1fr;
             }
 
-            .card-image {
-                height: 270px;
+            .product-visual {
+                height: 280px;
             }
         }
     </style>
 </head>
 <body>
+    <div class="topbar">
+        🎯 Kaliteli İş Güvenliği Ürünleri | Hızlı Teslimat | Güvenli Alışveriş
+    </div>
+
     <header class="header">
-        <div class="header-top">
-            ✉️ info@gokmeniselbiseleri.com | 📞 +90 555 123 45 67
-        </div>
-        <div class="header-main">
-            <div class="header-content">
-                <div class="logo">
-                    GÖKMEN <span class="logo-accent">İŞ ELBİSELERİ</span>
-                </div>
-                <div class="header-contact">
-                    <a href="tel:+905551234567">📞 Telefon</a>
-                    <a href="mailto:info@gokmeniselbiseleri.com">✉️ E-posta</a>
-                </div>
+        <div class="header-wrap">
+            <div class="brand-name">
+                GÖKMEN<span class="brand-dot">.</span>
+            </div>
+            <div class="contact-links">
+                <a href="tel:+905551234567">📞 +90 555 123 45 67</a>
+                <a href="mailto:info@gokmeniselbiseleri.com">✉️ İletişim</a>
             </div>
         </div>
     </header>
 
-    <section class="banner">
-        <h1 class="banner-title">İş Güvenliği Ürünleri</h1>
-        <p class="banner-subtitle">Profesyonel kalite, güvenilir çözümler</p>
+    <section class="hero-banner">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                İş Güvenliği <span class="hero-accent">Ürünleri</span>
+            </h1>
+            <p class="hero-description">
+                Profesyonel kalitede iş elbiseleri ve güvenlik ekipmanları. Güvenilir, dayanıklı ve sertifikalı ürünler.
+            </p>
+        </div>
     </section>
 
-    <main class="content">
-        <div class="content-title">
-            <h2>Ürün Kataloğu</h2>
-            <p>İhtiyacınız olan tüm iş güvenliği ürünleri</p>
+    <main class="main-section">
+        <div class="section-title">
+            <h2>Ürün Koleksiyonu</h2>
+            <p>İhtiyacınız olan tüm iş güvenliği ekipmanları</p>
         </div>
-        <div class="grid" id="productList"></div>
+        <div class="products-container" id="productList"></div>
     </main>
 
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-block">
+    <footer class="footer-area">
+        <div class="footer-wrapper">
+            <div class="footer-column">
                 <h3>Gökmen İş Elbiseleri</h3>
-                <p>İş güvenliği ve koruyucu ekipman alanında profesyonel çözümler sunuyoruz. Kaliteli ürünler ve güvenilir hizmet anlayışımızla yanınızdayız.</p>
+                <p>İş güvenliği ve koruyucu ekipman alanında profesyonel çözümler sunuyoruz. Kaliteli ürünler, güvenilir hizmet ve müşteri memnuniyeti önceliğimizdir.</p>
             </div>
 
-            <div class="footer-block">
+            <div class="footer-column">
                 <h3>İletişim</h3>
-                <div class="contact-group">
-                    <div class="contact-line">
+                <div class="contact-list">
+                    <div class="contact-entry">
                         <span>📞</span>
                         <a href="tel:+905551234567">+90 555 123 45 67</a>
                     </div>
-                    <div class="contact-line">
+                    <div class="contact-entry">
                         <span>✉️</span>
                         <a href="mailto:info@gokmeniselbiseleri.com">info@gokmeniselbiseleri.com</a>
                     </div>
-                    <div class="contact-line">
+                    <div class="contact-entry">
                         <span>📍</span>
                         <p>İstanbul, Türkiye</p>
                     </div>
                 </div>
             </div>
 
-            <div class="footer-block">
+            <div class="footer-column">
                 <h3>Sosyal Medya</h3>
-                <div class="social-media">
+                <div class="social-box">
                     <a href="#" aria-label="Facebook">📘</a>
                     <a href="#" aria-label="Instagram">📷</a>
                     <a href="#" aria-label="Twitter">🐦</a>
@@ -407,7 +460,7 @@
             </div>
         </div>
 
-        <div class="footer-end">
+        <div class="footer-copyright">
             <p>&copy; 2024 Gökmen İş Elbiseleri. Tüm hakları saklıdır.</p>
         </div>
     </footer>
@@ -481,15 +534,15 @@
             
             products.forEach(product => {
                 const card = document.createElement('div');
-                card.className = 'card';
+                card.className = 'product-box';
                 
                 card.innerHTML = `
-                    <div class="card-image">
+                    <div class="product-visual">
                         <img src="${product.image}" alt="${product.name}">
                     </div>
-                    <div class="card-body">
-                        <h3 class="card-name">${product.name}</h3>
-                        <p class="card-price">${product.price}</p>
+                    <div class="product-content">
+                        <h3 class="product-heading">${product.name}</h3>
+                        <p class="product-amount">${product.price}</p>
                     </div>
                 `;
                 
