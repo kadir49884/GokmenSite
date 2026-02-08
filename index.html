@@ -541,8 +541,8 @@
             {
                 id: 10,
                 name: "Ürün Tanıtım Videosu",
-                price: "İzlemek için tıklayın",
-                image: "images/video54354.mp4",
+                price: "Otomatik oynatılıyor",
+                image: "images/0208.mp4",
                 isVideo: true
             }
         ];
@@ -557,7 +557,7 @@
                 if (product.isVideo) {
                     card.innerHTML = `
                         <div class="product-visual">
-                            <video controls style="width: 100%; height: 100%; object-fit: cover;">
+                            <video autoplay muted loop playsinline controls style="width: 100%; height: 100%; object-fit: cover;">
                                 <source src="${product.image}" type="video/mp4">
                                 Tarayıcınız video etiketini desteklemiyor.
                             </video>
