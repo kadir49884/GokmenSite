@@ -147,7 +147,7 @@
 
         .products-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             gap: 35px;
         }
 
@@ -168,7 +168,7 @@
 
         .product-visual {
             width: 100%;
-            height: 330px;
+            height: 280px;
             background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
             display: flex;
             align-items: center;
@@ -309,8 +309,12 @@
 
         @media (max-width: 1024px) {
             .products-container {
-                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
                 gap: 28px;
+            }
+
+            .product-visual {
+                height: 240px;
             }
 
             .footer-wrapper {
