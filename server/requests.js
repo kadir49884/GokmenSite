@@ -1,6 +1,6 @@
-import { databaseReady, db } from './db.js';
 import { badRequest, notFound } from './http-error.js';
 import { getProduct } from './products.js';
+import { nextId, updateData, readData } from './store.js';
 
 export const REQUEST_STATUSES = ['yeni', 'islemde', 'tamamlandi'];
 
@@ -46,56 +46,53 @@ export async function validateRequest(body) {
 }
 
 export async function createRequest(request) {
-  await databaseReady;
-  const result = await db.execute({
-    sql: `INSERT INTO requests
-      (product_id, customer_name, phone, fabric, size, color, sleeve, closure, quantity, note)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    args: [
-      request.product_id,
-      request.customer_name,
-      request.phone,
-      request.fabric,
-      request.size,
-      request.color,
-      request.sleeve,
-      request.closure,
-      request.quantity,
-      request.note,
-    ],
+  return updateData((data) => {
+    const created = {
+      id: nextId(data.requests),
+      ...request,
+      status: 'yeni',
+      created_at: new Date().toISOString(),
+    };
+    data.requests.push(created);
+    return created;
   });
-  const created = await db.execute({
-    sql: 'SELECT * FROM requests WHERE id = ?',
-    args: [Number(result.lastInsertRowid)],
-  });
-  return created.rows[0];
 }
 
 export async function listRequests({ status = '' } = {}) {
-  await databaseReady;
-  const value = status.trim();
-  const { rows } = await db.execute({
-    sql: `SELECT r.*, p.code AS product_code, p.name AS product_name
-      FROM requests r JOIN products p ON p.id = r.product_id
-      WHERE ? = '' OR r.status = ?
-      ORDER BY r.created_at DESC, r.id DESC`,
-    args: [value, value],
-  });
-  return rows;
+  const { products, requests } = await readData();
+  const wanted = status.trim();
+
+  return requests
+    .filter((request) => !wanted || request.status === wanted)
+    .sort((a, b) => b.created_at.localeCompare(a.created_at) || b.id - a.id)
+    .map((request) => {
+      const product = products.find((item) => item.id === request.product_id);
+      return {
+        ...request,
+        product_code: product?.code ?? '',
+        product_name: product?.name ?? 'Silinmiş ürün',
+      };
+    });
 }
 
 export async function updateRequestStatus(id, status) {
   if (!REQUEST_STATUSES.includes(status)) throw badRequest('Geçersiz talep durumu.');
-  await databaseReady;
-  const result = await db.execute({
-    sql: 'UPDATE requests SET status = ? WHERE id = ?',
-    args: [status, id],
+
+  return updateData((data) => {
+    const request = data.requests.find((item) => item.id === id);
+    if (!request) return false;
+
+    request.status = status;
+    return true;
   });
-  return result.rowsAffected > 0;
 }
 
 export async function deleteRequest(id) {
-  await databaseReady;
-  const result = await db.execute({ sql: 'DELETE FROM requests WHERE id = ?', args: [id] });
-  return result.rowsAffected > 0;
+  return updateData((data) => {
+    const remaining = data.requests.filter((request) => request.id !== id);
+    if (remaining.length === data.requests.length) return false;
+
+    data.requests = remaining;
+    return true;
+  });
 }

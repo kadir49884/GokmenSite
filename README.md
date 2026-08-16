@@ -5,18 +5,16 @@
 
 ## Canlı yayın (Vercel)
 
-Proje Vercel Serverless Functions, Turso ve Vercel Blob ile çalışır. Çalışan site için yerel
-bilgisayarın açık kalması gerekmez.
+Proje Vercel Serverless Functions ve Vercel Blob ile çalışır; ayrı veritabanı gerekmez. Çalışan
+site için yerel bilgisayarın açık kalması gerekmez.
 
 1. GitHub deposunu Vercel'e bağlayın.
-2. Vercel Marketplace'ten **Turso Cloud** veritabanı oluşturup projeye bağlayın.
-3. Projeye public bir **Vercel Blob** deposu bağlayın.
-4. Vercel ortam değişkenlerine güçlü bir `ADMIN_PASSWORD` ekleyin.
-5. Production deployment başlatın.
+2. Projeye public bir **Vercel Blob** deposu bağlayın (`BLOB_READ_WRITE_TOKEN` otomatik oluşur).
+3. Vercel ortam değişkenlerine güçlü bir `ADMIN_PASSWORD` ekleyin.
+4. Production deployment başlatın.
 
-Turso entegrasyonu `TURSO_DATABASE_URL` ve `TURSO_AUTH_TOKEN`; Blob entegrasyonu
-`BLOB_READ_WRITE_TOKEN` değişkenlerini otomatik oluşturur. İlk istekte tablolar ve 4 örnek ürün
-otomatik hazırlanır.
+Ürünler, talepler ve site bilgileri Blob'daki tek bir `data/store.json` dosyasında tutulur. İlk
+istekte bu dosya örnek ürünlerle otomatik oluşturulur.
 
 Canlı site açıldıktan sonra `/admin.html` adresinden giriş yapıp **Site Bilgileri** sekmesini
 doldurun. Telefon ve WhatsApp numarası boş olduğu sürece iletişim butonları görünmez.
@@ -29,7 +27,8 @@ copy .env.example .env
 npm start
 ```
 
-Turso değişkenleri girilmezse yalnızca geliştirme için `data/bayram.db` kullanılır.
+`BLOB_READ_WRITE_TOKEN` girilmezse veriler `data/store.json`, yüklenen görseller
+`public/images/` içinde tutulur.
 
 ## Sayfalar
 
@@ -65,10 +64,10 @@ kalıcı olarak saklanır (png, jpg, webp; en fazla 5 MB).
 
 ```
 api/            Vercel Serverless Function giriş noktası
-server/         Express API, Turso erişimi, doğrulama ve dosya yükleme
+server/         Express API, Blob veri erişimi, doğrulama ve dosya yükleme
 public/         Statik site (vitrin + yönetim paneli)
 public/images/  Ürün fotoğrafları
-data/           Yalnızca yerel geliştirmede kullanılan SQLite veritabanı
+data/           Yalnızca yerel geliştirmede kullanılan store.json
 ```
 
 ## API

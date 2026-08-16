@@ -42,7 +42,7 @@ export async function upload(path, formData) {
 export const formatPrice = (value) =>
   new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(value);
 
-export const formatDate = (value) => new Date(`${value.replace(' ', 'T')}Z`).toLocaleString('tr-TR');
+export const formatDate = (value) => new Date(value).toLocaleString('tr-TR');
 
 export function escapeHtml(value) {
   return String(value ?? '').replace(

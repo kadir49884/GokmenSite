@@ -63,11 +63,6 @@ export function handleImageUpload(req, res, next) {
         return;
       }
 
-      if (process.env.VERCEL) {
-        next(badRequest('Vercel Blob deposu bağlanmamış. Önce Blob entegrasyonunu ekleyin.'));
-        return;
-      }
-
       fs.writeFileSync(path.join(IMAGE_DIR, fileName), req.file.buffer);
       res.status(201).json({ url: `/images/${fileName}` });
     } catch (uploadError) {

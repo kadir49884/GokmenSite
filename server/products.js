@@ -1,7 +1,7 @@
-import { databaseReady, db } from './db.js';
 import { badRequest } from './http-error.js';
+import { nextId, readData, updateData } from './store.js';
 
-/** Veritabaninda JSON dizi olarak tutulan alanlar. */
+/** Urunde liste olarak tutulan alanlar. */
 const LIST_FIELDS = ['images', 'fabrics', 'sizes', 'colors', 'sleeves', 'closures'];
 
 /** Hem dizi hem "Siyah, Beyaz" biçimindeki girdiyi temiz bir diziye çevirir. */
@@ -10,13 +10,7 @@ function toList(value) {
   return items.map((item) => String(item).trim()).filter(Boolean);
 }
 
-function toProduct(row) {
-  if (!row) return null;
-  const product = { ...row, inStock: row.in_stock === 1 };
-  delete product.in_stock;
-  for (const field of LIST_FIELDS) product[field] = JSON.parse(row[field]);
-  return product;
-}
+const byCode = (a, b) => a.code.localeCompare(b.code, 'tr', { numeric: true });
 
 export function validateProduct(body) {
   const code = String(body.code ?? '').trim();
@@ -33,101 +27,65 @@ export function validateProduct(body) {
     category: String(body.category ?? '').trim(),
     description: String(body.description ?? '').trim(),
     price,
-    in_stock: body.inStock ? 1 : 0,
+    inStock: Boolean(body.inStock),
   };
-  for (const field of LIST_FIELDS) product[field] = JSON.stringify(toList(body[field]));
+  for (const field of LIST_FIELDS) product[field] = toList(body[field]);
   return product;
 }
 
 export async function listProducts({ search = '', category = '', onlyInStock = false } = {}) {
-  await databaseReady;
-  const query = `%${search.trim()}%`;
-  const { rows } = await db.execute({
-    sql: `SELECT * FROM products
-      WHERE (code LIKE ? OR name LIKE ?)
-        AND (? = '' OR category = ?)
-        AND (? = 0 OR in_stock = 1)
-      ORDER BY code`,
-    args: [query, query, category.trim(), category.trim(), onlyInStock ? 1 : 0],
-  });
-  return rows.map(toProduct);
+  const { products } = await readData();
+  const term = search.trim().toLocaleLowerCase('tr');
+  const wanted = category.trim();
+
+  return products
+    .filter((product) => !term || `${product.code} ${product.name}`.toLocaleLowerCase('tr').includes(term))
+    .filter((product) => !wanted || product.category === wanted)
+    .filter((product) => !onlyInStock || product.inStock)
+    .sort(byCode);
 }
 
 export async function listCategories() {
-  await databaseReady;
-  const { rows } = await db.execute(
-    "SELECT DISTINCT category FROM products WHERE category <> '' ORDER BY category",
-  );
-  return rows.map((row) => row.category);
+  const { products } = await readData();
+  const categories = new Set(products.map((product) => product.category).filter(Boolean));
+  return [...categories].sort((a, b) => a.localeCompare(b, 'tr'));
 }
 
 export async function getProduct(id) {
-  await databaseReady;
-  const { rows } = await db.execute({ sql: 'SELECT * FROM products WHERE id = ?', args: [id] });
-  return toProduct(rows[0]);
+  const { products } = await readData();
+  return products.find((product) => product.id === id) ?? null;
 }
 
 export async function createProduct(product) {
-  await databaseReady;
-  const existing = await db.execute({ sql: 'SELECT 1 FROM products WHERE code = ?', args: [product.code] });
-  if (existing.rows.length > 0) {
-    throw badRequest('Bu ürün kodu zaten kayıtlı.');
-  }
-  const result = await db.execute({
-    sql: `INSERT INTO products
-      (code, name, category, description, price, in_stock, images, fabrics, sizes, colors, sleeves, closures)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    args: [
-      product.code,
-      product.name,
-      product.category,
-      product.description,
-      product.price,
-      product.in_stock,
-      product.images,
-      product.fabrics,
-      product.sizes,
-      product.colors,
-      product.sleeves,
-      product.closures,
-    ],
+  return updateData((data) => {
+    if (data.products.some((current) => current.code === product.code)) {
+      throw badRequest('Bu ürün kodu zaten kayıtlı.');
+    }
+    const created = { id: nextId(data.products), ...product };
+    data.products.push(created);
+    return created;
   });
-  return getProduct(Number(result.lastInsertRowid));
 }
 
 export async function updateProduct(id, product) {
-  await databaseReady;
-  const conflict = await db.execute({
-    sql: 'SELECT 1 FROM products WHERE code = ? AND id <> ?',
-    args: [product.code, id],
+  return updateData((data) => {
+    const current = data.products.find((item) => item.id === id);
+    if (!current) return null;
+    if (data.products.some((item) => item.code === product.code && item.id !== id)) {
+      throw badRequest('Bu ürün kodu başka bir üründe kullanılıyor.');
+    }
+    Object.assign(current, product);
+    return current;
   });
-  if (conflict.rows.length > 0) throw badRequest('Bu ürün kodu başka bir üründe kullanılıyor.');
-
-  const result = await db.execute({
-    sql: `UPDATE products SET code = ?, name = ?, category = ?, description = ?,
-      price = ?, in_stock = ?, images = ?, fabrics = ?, sizes = ?, colors = ?, sleeves = ?, closures = ?
-      WHERE id = ?`,
-    args: [
-      product.code,
-      product.name,
-      product.category,
-      product.description,
-      product.price,
-      product.in_stock,
-      product.images,
-      product.fabrics,
-      product.sizes,
-      product.colors,
-      product.sleeves,
-      product.closures,
-      id,
-    ],
-  });
-  return result.rowsAffected > 0 ? getProduct(id) : null;
 }
 
 export async function deleteProduct(id) {
-  await databaseReady;
-  const result = await db.execute({ sql: 'DELETE FROM products WHERE id = ?', args: [id] });
-  return result.rowsAffected > 0;
+  return updateData((data) => {
+    const remaining = data.products.filter((product) => product.id !== id);
+    if (remaining.length === data.products.length) return false;
+
+    data.products = remaining;
+    data.requests = data.requests.filter((request) => request.product_id !== id);
+    return true;
+  });
 }
