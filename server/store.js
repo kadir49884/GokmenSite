@@ -1,16 +1,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { get, put } from '@vercel/blob';
+import { neon } from '@neondatabase/serverless';
 import { DEFAULT_PRODUCTS } from './product-data.js';
 
-/** Tum veri (urunler, talepler, ayarlar) tek JSON dosyasinda tutulur. */
-const BLOB_PATHNAME = 'data/store.json';
+/** Tum veri (urunler, talepler, ayarlar) tek JSON kaydinda tutulur. */
 const LOCAL_FILE = path.join(process.cwd(), 'data', 'store.json');
-const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 
-if (process.env.VERCEL && !blobToken) {
-  throw new Error('Vercel Blob deposu projeye bağlanmamış.');
+if (process.env.VERCEL && !process.env.DATABASE_URL) {
+  throw new Error('Veritabanı Vercel projesine bağlanmamış.');
 }
+
+const sql = process.env.DATABASE_URL ? neon(process.env.DATABASE_URL) : null;
+let tableReady;
 
 function initialData() {
   return {
@@ -24,29 +25,30 @@ export function nextId(items) {
   return items.reduce((max, item) => Math.max(max, item.id), 0) + 1;
 }
 
+async function ensureTable() {
+  tableReady ??= sql`CREATE TABLE IF NOT EXISTS store (id INT PRIMARY KEY, data JSONB NOT NULL)`;
+  await tableReady;
+}
+
 async function readSaved() {
-  if (!blobToken) {
+  if (!sql) {
     return fs.existsSync(LOCAL_FILE) ? JSON.parse(fs.readFileSync(LOCAL_FILE, 'utf8')) : null;
   }
-  // useCache: false, panelde yapilan degisikligin vitrinde hemen gorunmesini saglar.
-  const blob = await get(BLOB_PATHNAME, { access: 'public', useCache: false, token: blobToken });
-  return blob ? JSON.parse(await new Response(blob.stream).text()) : null;
+  await ensureTable();
+  const rows = await sql`SELECT data FROM store WHERE id = 1`;
+  return rows[0]?.data ?? null;
 }
 
 async function save(data) {
-  const json = JSON.stringify(data, null, 2);
-  if (!blobToken) {
+  if (!sql) {
     fs.mkdirSync(path.dirname(LOCAL_FILE), { recursive: true });
-    fs.writeFileSync(LOCAL_FILE, json);
+    fs.writeFileSync(LOCAL_FILE, JSON.stringify(data, null, 2));
     return;
   }
-  await put(BLOB_PATHNAME, json, {
-    access: 'public',
-    contentType: 'application/json',
-    addRandomSuffix: false,
-    allowOverwrite: true,
-    token: blobToken,
-  });
+  await ensureTable();
+  await sql`
+    INSERT INTO store (id, data) VALUES (1, ${JSON.stringify(data)}::jsonb)
+    ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data`;
 }
 
 /** Kayitli veriyi getirir, ilk calistirmada varsayilan urunlerle olusturur. */

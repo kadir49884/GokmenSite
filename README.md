@@ -5,16 +5,17 @@
 
 ## Canlı yayın (Vercel)
 
-Proje Vercel Serverless Functions ve Vercel Blob ile çalışır; ayrı veritabanı gerekmez. Çalışan
-site için yerel bilgisayarın açık kalması gerekmez.
+Proje Vercel Serverless Functions, Neon Postgres ve Vercel Blob ile çalışır. Çalışan site için
+yerel bilgisayarın açık kalması gerekmez.
 
 1. GitHub deposunu Vercel'e bağlayın.
-2. Projeye public bir **Vercel Blob** deposu bağlayın (`BLOB_READ_WRITE_TOKEN` otomatik oluşur).
-3. Vercel ortam değişkenlerine güçlü bir `ADMIN_PASSWORD` ekleyin.
-4. Production deployment başlatın.
+2. Projeye bir **Neon Postgres** veritabanı bağlayın (`DATABASE_URL` otomatik oluşur).
+3. Projeye public bir **Vercel Blob** deposu bağlayın (`BLOB_READ_WRITE_TOKEN` otomatik oluşur).
+4. Vercel ortam değişkenlerine güçlü bir `ADMIN_PASSWORD` ekleyin.
+5. Production deployment başlatın.
 
-Ürünler, talepler ve site bilgileri Blob'daki tek bir `data/store.json` dosyasında tutulur. İlk
-istekte bu dosya örnek ürünlerle otomatik oluşturulur.
+Ürünler, talepler ve site bilgileri veritabanındaki `store` tablosunda tek bir JSON kaydı olarak
+tutulur; ilk istekte örnek ürünlerle otomatik oluşur. Panelden yüklenen görseller Blob'a gider.
 
 Canlı site açıldıktan sonra `/admin.html` adresinden giriş yapıp **Site Bilgileri** sekmesini
 doldurun. Telefon ve WhatsApp numarası boş olduğu sürece iletişim butonları görünmez.
@@ -27,8 +28,8 @@ copy .env.example .env
 npm start
 ```
 
-`BLOB_READ_WRITE_TOKEN` girilmezse veriler `data/store.json`, yüklenen görseller
-`public/images/` içinde tutulur.
+`DATABASE_URL` girilmezse veriler `data/store.json`, `BLOB_READ_WRITE_TOKEN` girilmezse yüklenen
+görseller `public/images/` içinde tutulur.
 
 ## Sayfalar
 
@@ -64,7 +65,7 @@ kalıcı olarak saklanır (png, jpg, webp; en fazla 5 MB).
 
 ```
 api/            Vercel Serverless Function giriş noktası
-server/         Express API, Blob veri erişimi, doğrulama ve dosya yükleme
+server/         Express API, veri erişimi, doğrulama ve dosya yükleme
 public/         Statik site (vitrin + yönetim paneli)
 public/images/  Ürün fotoğrafları
 data/           Yalnızca yerel geliştirmede kullanılan store.json
