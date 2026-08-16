@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="İş kıyafeti ürün detayı: kumaş tipi, bedenler, renkler ve stok durumu." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>Ürün Detayı</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="inner">
+        <a class="logo" href="/" data-company>Bayram İş Kıyafetleri</a>
+        <nav>
+          <a href="/">Ürünler</a>
+          <a href="/iletisim.html">İletişim</a>
+          <a href="/admin.html">Yönetim</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container stack">
+      <div><a href="/">&larr; Tüm ürünler</a></div>
+      <div id="message" class="message hidden"></div>
+
+      <section id="detail" class="product-detail hidden">
+        <div class="card">
+          <div id="image" class="detail-image"></div>
+          <div id="thumbs" class="thumb-strip"></div>
+        </div>
+        <div class="card">
+          <span id="code" class="code"></span>
+          <h1 id="name"></h1>
+          <p id="description" class="product-description"></p>
+          <p id="price" class="price"></p>
+          <span id="stock" class="badge"></span>
+          <ul id="specs" class="spec-list"></ul>
+          <div id="detail-actions" class="actions"></div>
+        </div>
+      </section>
+
+      <section id="request-section" class="card hidden">
+        <h2 id="request-title">Ürün Talebi Oluştur</h2>
+        <div id="stock-note" class="message info hidden"></div>
+
+        <form id="request-form">
+          <div id="option-fields"></div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="customerName">Ad Soyad</label>
+              <input id="customerName" name="customerName" required minlength="3" />
+            </div>
+            <div class="field">
+              <label for="phone">Telefon</label>
+              <input id="phone" name="phone" required minlength="7" placeholder="05xx xxx xx xx" />
+            </div>
+            <div class="field">
+              <label for="quantity">Adet</label>
+              <input id="quantity" name="quantity" type="number" min="1" value="1" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="note">Not <span class="hint">(isteğe bağlı)</span></label>
+            <textarea id="note" name="note" rows="3"></textarea>
+          </div>
+
+          <div class="actions">
+            <button type="submit">Talebi Gönder</button>
+          </div>
+        </form>
+
+        <div id="form-message" class="message hidden"></div>
+      </section>
+    </main>
+
+    <footer id="site-footer" class="site-footer"></footer>
+
+    <script type="module" src="/js/product.js"></script>
+  </body>
+</html>

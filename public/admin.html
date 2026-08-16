@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>Yönetim Paneli</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="inner">
+        <a class="logo" href="/" data-company>Bayram İş Kıyafetleri</a>
+        <nav>
+          <a href="/">Siteye dön</a>
+          <button id="logout" class="link hidden" type="button">Çıkış yap</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <!-- Giriş -->
+      <section id="login-view" class="card login-box hidden">
+        <h1>Yönetici Girişi</h1>
+        <form id="login-form">
+          <div class="field">
+            <label for="password">Şifre</label>
+            <input id="password" type="password" required />
+          </div>
+          <button type="submit">Giriş Yap</button>
+        </form>
+        <div id="login-message" class="message hidden"></div>
+      </section>
+
+      <!-- Panel -->
+      <section id="panel-view" class="hidden stack">
+        <div>
+          <h1>Yönetim Paneli</h1>
+          <p class="subtitle">Ürünleri düzenleyin, talepleri takip edin, site bilgilerini güncelleyin.</p>
+          <div class="tabs">
+            <button type="button" class="active" data-tab="products">Ürünler</button>
+            <button type="button" data-tab="requests">Talepler</button>
+            <button type="button" data-tab="settings">Site Bilgileri</button>
+          </div>
+        </div>
+
+        <div id="panel-message" class="message hidden"></div>
+
+        <!-- Ürünler sekmesi -->
+        <div id="tab-products" class="stack">
+          <div class="card">
+            <h2 id="product-form-title">Yeni Ürün Ekle</h2>
+            <form id="product-form">
+              <div class="field-row">
+                <div class="field">
+                  <label for="code">Ürün Kodu</label>
+                  <input id="code" name="code" required placeholder="201" />
+                </div>
+                <div class="field">
+                  <label for="name">Ürün Bilgisi</label>
+                  <input id="name" name="name" required placeholder="Erkek İş Önlüğü" />
+                </div>
+                <div class="field">
+                  <label for="category">Kategori</label>
+                  <input id="category" name="category" list="category-list" placeholder="Önlük" />
+                  <datalist id="category-list"></datalist>
+                </div>
+                <div class="field">
+                  <label for="price">Fiyat (TL)</label>
+                  <input id="price" name="price" type="number" min="0" step="1" required placeholder="250" />
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="description">Açıklama <span class="hint">isteğe bağlı</span></label>
+                <textarea id="description" name="description" rows="2" placeholder="Kısa ürün açıklaması"></textarea>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label for="fabrics">Kumaş Tipi <span class="hint">virgülle ayırın</span></label>
+                  <input id="fabrics" name="fabrics" placeholder="Alpaka, Gabardin" />
+                </div>
+                <div class="field">
+                  <label for="sizes">Mevcut Bedenler <span class="hint">virgülle ayırın</span></label>
+                  <input id="sizes" name="sizes" placeholder="S, M, L, XL, XXL" />
+                </div>
+                <div class="field">
+                  <label for="colors">Mevcut Renkler <span class="hint">virgülle ayırın</span></label>
+                  <input id="colors" name="colors" placeholder="Siyah, Beyaz" />
+                </div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label for="sleeves">Kol Tipi <span class="hint">virgülle ayırın</span></label>
+                  <input id="sleeves" name="sleeves" placeholder="Uzun Kol, Kısa Kol" />
+                </div>
+                <div class="field">
+                  <label for="closures">Kapanma Şekli <span class="hint">virgülle ayırın</span></label>
+                  <input id="closures" name="closures" placeholder="Düğmeli, Çıtçıtlı" />
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="images">Görseller <span class="hint">virgülle ayırın veya bilgisayardan yükleyin</span></label>
+                <input id="images" name="images" placeholder="/images/onluk-beyaz.png" />
+                <div class="upload-row">
+                  <input id="image-file" type="file" accept="image/png,image/jpeg,image/webp" />
+                  <button id="upload-button" type="button" class="secondary">Görseli Yükle</button>
+                </div>
+                <div id="image-preview" class="thumb-strip"></div>
+              </div>
+
+              <div class="field">
+                <label class="checkbox">
+                  <input id="inStock" name="inStock" type="checkbox" checked />
+                  Stok durumu: Mevcut
+                </label>
+              </div>
+
+              <div class="actions">
+                <button type="submit">Kaydet</button>
+                <button id="product-form-reset" type="button" class="secondary hidden">İptal</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card">
+            <h2>Kayıtlı Ürünler</h2>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Görsel</th>
+                    <th>Kod</th>
+                    <th>Ürün Bilgisi</th>
+                    <th>Fiyat</th>
+                    <th>Stok</th>
+                    <th>Seçenekler</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="product-rows"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Talepler sekmesi -->
+        <div id="tab-requests" class="card hidden">
+          <h2>Ürün Talepleri</h2>
+          <div class="toolbar">
+            <label class="checkbox">
+              Durum filtresi
+              <select id="status-filter">
+                <option value="">Tümü</option>
+                <option value="yeni">Yeni</option>
+                <option value="islemde">İşlemde</option>
+                <option value="tamamlandi">Tamamlandı</option>
+              </select>
+            </label>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tarih</th>
+                  <th>Ürün</th>
+                  <th>Müşteri</th>
+                  <th>Seçimler</th>
+                  <th>Adet</th>
+                  <th>Durum</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="request-rows"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Site bilgileri sekmesi -->
+        <div id="tab-settings" class="card hidden">
+          <h2>Site Bilgileri</h2>
+          <p class="subtitle">Bu bilgiler ana sayfa, iletişim sayfası ve alt bilgide görünür.</p>
+          <form id="settings-form">
+            <div class="field-row">
+              <div class="field">
+                <label for="companyName">Firma Adı</label>
+                <input id="companyName" name="companyName" required />
+              </div>
+              <div class="field">
+                <label for="phone">Telefon</label>
+                <input id="phone" name="phone" placeholder="0212 000 00 00" />
+              </div>
+              <div class="field">
+                <label for="whatsapp">WhatsApp Numarası <span class="hint">ülke kodu ile</span></label>
+                <input id="whatsapp" name="whatsapp" placeholder="905551112233" />
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="email">E-posta</label>
+                <input id="email" name="email" type="email" placeholder="bilgi@firma.com" />
+              </div>
+              <div class="field">
+                <label for="workingHours">Çalışma Saatleri</label>
+                <input id="workingHours" name="workingHours" placeholder="Hafta içi 09:00 - 18:00" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="slogan">Slogan</label>
+              <input id="slogan" name="slogan" />
+            </div>
+
+            <div class="field">
+              <label for="address">Adres</label>
+              <input id="address" name="address" />
+            </div>
+
+            <div class="field">
+              <label for="about">Hakkımızda</label>
+              <textarea id="about" name="about" rows="4"></textarea>
+            </div>
+
+            <div class="actions">
+              <button type="submit">Bilgileri Kaydet</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="/js/admin.js"></script>
+  </body>
+</html>

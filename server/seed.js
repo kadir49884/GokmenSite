@@ -1,0 +1,77 @@
+import { createProduct, listProducts, validateProduct } from './products.js';
+
+const FABRICS = ['Alpaka', 'Gabardin'];
+const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
+
+const SAMPLE_PRODUCTS = [
+  {
+    code: '201',
+    name: 'Erkek İş Önlüğü (Garnili)',
+    category: 'Önlük',
+    description:
+      'Yaka ve cep ağzı garnili, çıtçıtlı iş önlüğü. Market, restoran ve teknik servis ekipleri için uygundur.',
+    price: 250,
+    inStock: true,
+    images: ['/images/onluk-beyaz.png', '/images/onluk-lacivert.png'],
+    fabrics: FABRICS,
+    sizes: SIZES,
+    colors: ['Beyaz - Kırmızı Garni', 'Lacivert - Kırmızı Garni'],
+    sleeves: ['Kısa Kol', 'Uzun Kol'],
+    closures: ['Çıtçıtlı', 'Düğmeli'],
+  },
+  {
+    code: '202',
+    name: 'Garnili İş Takımı (Önlük + Pantolon)',
+    category: 'Takım',
+    description: 'Garnili önlük ve beli lastikli pantolondan oluşan takım. Renk kombinasyonu talebe göre hazırlanır.',
+    price: 450,
+    inStock: true,
+    images: ['/images/takim-beyaz.png', '/images/takim-kirmizi-lacivert.png'],
+    fabrics: FABRICS,
+    sizes: SIZES,
+    colors: ['Beyaz - Kırmızı Garni', 'Kırmızı - Lacivert Garni'],
+    sleeves: ['Kısa Kol', 'Uzun Kol'],
+    closures: ['Çıtçıtlı', 'Düğmeli'],
+  },
+  {
+    code: '203',
+    name: 'Lastikli İş Pantolonu',
+    category: 'Pantolon',
+    description: 'Beli ve paçası lastikli, yan cepli iş pantolonu. Mutfak ve üretim alanlarında rahat kullanım sağlar.',
+    price: 220,
+    inStock: true,
+    images: [
+      '/images/pantolon-siyah-beyaz.png',
+      '/images/pantolon-beyaz.png',
+      '/images/pantolon-siyah.png',
+      '/images/pantolon-beyaz-seri.png',
+    ],
+    fabrics: FABRICS,
+    sizes: SIZES,
+    colors: ['Siyah', 'Beyaz'],
+  },
+  {
+    code: '204',
+    name: 'V Yaka İş Takımı',
+    category: 'Takım',
+    description: 'V yaka cepli üst ve beli lastikli pantolondan oluşan takım. Sağlık ve güzellik merkezleri için idealdir.',
+    price: 380,
+    inStock: false,
+    images: ['/images/vyaka-takim-beyaz.png', '/images/vyaka-ust-beyaz.png'],
+    fabrics: FABRICS,
+    sizes: SIZES,
+    colors: ['Beyaz'],
+    sleeves: ['Kısa Kol'],
+  },
+];
+
+const existingCodes = new Set(listProducts().map((product) => product.code));
+
+for (const sample of SAMPLE_PRODUCTS) {
+  if (existingCodes.has(sample.code)) {
+    console.log(`${sample.code} zaten kayıtlı, atlandı.`);
+    continue;
+  }
+  createProduct(validateProduct(sample));
+  console.log(`${sample.code} eklendi.`);
+}

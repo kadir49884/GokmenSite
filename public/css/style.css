@@ -1,0 +1,636 @@
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --border: #e3e6eb;
+  --text: #1c2430;
+  --muted: #6b7684;
+  --brand: #1f3a5f;
+  --brand-soft: #eaf0f7;
+  --success: #1a7f4b;
+  --danger: #c0392b;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(20, 30, 45, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+a {
+  color: var(--brand);
+  text-decoration: none;
+}
+
+.site-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.site-header .inner,
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.site-header .inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 64px;
+}
+
+.logo {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--brand);
+}
+
+.site-header nav {
+  display: flex;
+  gap: 18px;
+  font-size: 0.95rem;
+}
+
+main {
+  padding: 28px 0 56px;
+}
+
+/* ---------- Tanıtım bölümü ---------- */
+
+.hero {
+  background: var(--brand);
+  color: #fff;
+  padding: 40px 0;
+}
+
+.hero h1 {
+  margin: 0 0 8px;
+  font-size: 1.9rem;
+}
+
+.hero p {
+  margin: 0 0 18px;
+  max-width: 620px;
+  opacity: 0.9;
+}
+
+.button-link {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--brand);
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.button-link.whatsapp {
+  background: #1f9d55;
+  color: #fff;
+}
+
+.button-link.secondary-link {
+  background: transparent;
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* ---------- Kategori seçimi ---------- */
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 7px 16px;
+  font-weight: 500;
+}
+
+.chip.active {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+h1 {
+  font-size: 1.6rem;
+  margin: 0 0 6px;
+}
+
+h2 {
+  font-size: 1.15rem;
+  margin: 0 0 12px;
+}
+
+.subtitle {
+  color: var(--muted);
+  margin: 0 0 24px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+/* ---------- Filtreler ---------- */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.toolbar input[type="search"] {
+  flex: 1 1 260px;
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* ---------- Ürün listesi ---------- */
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 18px;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  color: inherit;
+}
+
+.product-card:hover {
+  border-color: var(--brand);
+}
+
+.product-card .thumb {
+  aspect-ratio: 4 / 3;
+  background: var(--brand-soft);
+  display: grid;
+  place-items: center;
+  color: var(--brand);
+  font-weight: 700;
+  font-size: 1.4rem;
+  overflow: hidden;
+}
+
+.product-card .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-card .body {
+  padding: 14px 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.code {
+  color: var(--muted);
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
+
+.price {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.badge {
+  align-self: flex-start;
+  font-size: 0.8rem;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+}
+
+.badge.in-stock {
+  color: var(--success);
+}
+
+.badge.out-of-stock {
+  color: var(--danger);
+}
+
+/* ---------- Ürün detay ---------- */
+
+.product-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.detail-image {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius);
+  background: var(--brand-soft);
+  display: grid;
+  place-items: center;
+  color: var(--brand);
+  font-size: 2rem;
+  font-weight: 700;
+  overflow: hidden;
+}
+
+.detail-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumb-strip {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.thumb-button {
+  width: 68px;
+  height: 68px;
+  padding: 0;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.thumb-button.active {
+  border-color: var(--brand);
+}
+
+.thumb-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.spec-list {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.spec-list span {
+  color: var(--muted);
+  display: inline-block;
+  min-width: 130px;
+}
+
+.product-description {
+  color: var(--muted);
+  margin: 4px 0 12px;
+}
+
+.two-column {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.contact-list {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.contact-list span {
+  color: var(--muted);
+}
+
+/* ---------- Alt bilgi ---------- */
+
+.site-footer {
+  background: #16212f;
+  color: #d6dce4;
+  padding: 32px 0 20px;
+  margin-top: 40px;
+}
+
+.site-footer .inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+}
+
+.site-footer h3 {
+  font-size: 0.95rem;
+  margin: 0 0 10px;
+  color: #fff;
+}
+
+.site-footer p {
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.site-footer a {
+  color: #d6dce4;
+  text-decoration: underline;
+}
+
+.site-footer .contact-list span {
+  color: #93a1b3;
+}
+
+.copyright {
+  max-width: 1080px;
+  margin: 24px auto 0;
+  padding: 14px 20px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.82rem;
+  opacity: 0.7;
+}
+
+/* ---------- Form ---------- */
+
+label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: inherit;
+  background: var(--surface);
+  color: inherit;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--brand-soft);
+  border-color: var(--brand);
+}
+
+.field {
+  margin-bottom: 14px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.options label {
+  margin: 0;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  cursor: pointer;
+  background: var(--surface);
+}
+
+.options input {
+  display: none;
+}
+
+.options input:checked + span {
+  color: var(--brand);
+}
+
+.options label:has(input:checked) {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 9px 16px;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 600;
+}
+
+button:hover {
+  filter: brightness(1.1);
+}
+
+button.secondary {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+button.danger {
+  background: var(--surface);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+button.link {
+  background: none;
+  border: none;
+  color: var(--brand);
+  padding: 0;
+  text-decoration: underline;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ---------- Mesajlar ---------- */
+
+.message {
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 14px 0;
+  font-size: 0.95rem;
+  border: 1px solid;
+}
+
+.message.success {
+  color: var(--success);
+  border-color: var(--success);
+  background: #eef8f2;
+}
+
+.message.error {
+  color: var(--danger);
+  border-color: var(--danger);
+  background: #fdeeec;
+}
+
+.message.info {
+  color: var(--brand);
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+.empty {
+  color: var(--muted);
+  padding: 32px 0;
+  text-align: center;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ---------- Yönetim paneli ---------- */
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.tabs button.active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+th {
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+td .actions {
+  gap: 8px;
+}
+
+.upload-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.upload-row input[type="file"] {
+  flex: 1 1 220px;
+  padding: 7px 10px;
+}
+
+.row-thumb {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  display: block;
+}
+
+td select {
+  min-width: 130px;
+}
+
+.stack {
+  display: grid;
+  gap: 20px;
+}
+
+.login-box {
+  max-width: 380px;
+  margin: 60px auto;
+}
+
+@media (max-width: 720px) {
+  .product-detail {
+    grid-template-columns: 1fr;
+  }
+}
