@@ -1,4 +1,4 @@
-import { db } from './db.js';
+import { databaseReady, db } from './db.js';
 
 /** Panelden duzenlenebilen site bilgileri ve varsayilan degerleri. */
 const DEFAULTS = {
@@ -14,25 +14,23 @@ const DEFAULTS = {
   workingHours: '',
 };
 
-export function getSettings() {
+export async function getSettings() {
+  await databaseReady;
+  const { rows } = await db.execute('SELECT key, value FROM settings');
   const saved = Object.fromEntries(
-    db.prepare('SELECT key, value FROM settings').all().map((row) => [row.key, row.value]),
+    rows.map((row) => [row.key, row.value]),
   );
   return { ...DEFAULTS, ...saved };
 }
 
-export function updateSettings(body) {
-  const statement = db.prepare(
-    'INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value',
-  );
-  const save = db.transaction((entries) => {
-    for (const [key, value] of entries) statement.run(key, value);
-  });
-
-  save(
-    Object.keys(DEFAULTS)
-      .filter((key) => key in body)
-      .map((key) => [key, String(body[key] ?? '').trim()]),
-  );
+export async function updateSettings(body) {
+  await databaseReady;
+  const statements = Object.keys(DEFAULTS)
+    .filter((key) => key in body)
+    .map((key) => ({
+      sql: 'INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value',
+      args: [key, String(body[key] ?? '').trim()],
+    }));
+  if (statements.length > 0) await db.batch(statements, 'write');
   return getSettings();
 }

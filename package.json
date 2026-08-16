@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
   "description": "İş kıyafeti kataloğu ve yönetim paneli",
   "scripts": {
     "start": "node server/index.js",
     "seed": "node server/seed.js"
   },
   "dependencies": {
-    "better-sqlite3": "11.10.0",
+    "@libsql/client": "^0.17.4",
+    "@vercel/blob": "^2.8.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "multer": "^2.2.0"

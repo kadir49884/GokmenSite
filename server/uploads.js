@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { put } from '@vercel/blob';
 import multer from 'multer';
 import { badRequest } from './http-error.js';
 
@@ -26,10 +27,7 @@ function safeFileName(rawName) {
 }
 
 const upload = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, done) => done(null, IMAGE_DIR),
-    filename: (req, file, done) => done(null, safeFileName(file.originalname)),
-  }),
+  storage: multer.memoryStorage(),
   limits: { fileSize: MAX_SIZE },
   fileFilter: (req, file, done) => {
     if (!ALLOWED_EXTENSIONS.has(path.extname(file.originalname).toLowerCase())) {
@@ -41,7 +39,7 @@ const upload = multer({
 }).single('image');
 
 export function handleImageUpload(req, res, next) {
-  upload(req, res, (error) => {
+  upload(req, res, async (error) => {
     if (error) {
       const message = error.code === 'LIMIT_FILE_SIZE' ? 'Görsel en fazla 5 MB olabilir.' : error.message;
       next(error.status ? error : badRequest(message));
@@ -51,6 +49,29 @@ export function handleImageUpload(req, res, next) {
       next(badRequest('Görsel seçilmedi.'));
       return;
     }
-    res.status(201).json({ url: `/images/${req.file.filename}` });
+
+    try {
+      const fileName = safeFileName(req.file.originalname);
+      if (process.env.BLOB_READ_WRITE_TOKEN) {
+        const blob = await put(`products/${fileName}`, req.file.buffer, {
+          access: 'public',
+          contentType: req.file.mimetype,
+          addRandomSuffix: false,
+          token: process.env.BLOB_READ_WRITE_TOKEN,
+        });
+        res.status(201).json({ url: blob.url });
+        return;
+      }
+
+      if (process.env.VERCEL) {
+        next(badRequest('Vercel Blob deposu bağlanmamış. Önce Blob entegrasyonunu ekleyin.'));
+        return;
+      }
+
+      fs.writeFileSync(path.join(IMAGE_DIR, fileName), req.file.buffer);
+      res.status(201).json({ url: `/images/${fileName}` });
+    } catch (uploadError) {
+      next(uploadError);
+    }
   });
 }

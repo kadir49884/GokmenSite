@@ -1,15 +1,23 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import Database from 'better-sqlite3';
+import { createClient } from '@libsql/client';
+import { DEFAULT_PRODUCTS } from './product-data.js';
 
-const dataDir = path.join(process.cwd(), 'data');
-fs.mkdirSync(dataDir, { recursive: true });
+if (process.env.VERCEL && (!process.env.TURSO_DATABASE_URL || !process.env.TURSO_AUTH_TOKEN)) {
+  throw new Error('Turso veritabanı Vercel projesine bağlanmamış.');
+}
 
-export const db = new Database(path.join(dataDir, 'bayram.db'));
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
+const databaseUrl = process.env.TURSO_DATABASE_URL || 'file:data/bayram.db';
+if (databaseUrl.startsWith('file:')) {
+  fs.mkdirSync(path.join(process.cwd(), 'data'), { recursive: true });
+}
 
-db.exec(`
+export const db = createClient({
+  url: databaseUrl,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+});
+
+const SCHEMA = `
   CREATE TABLE IF NOT EXISTS products (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     code        TEXT    NOT NULL UNIQUE,
@@ -47,16 +55,45 @@ db.exec(`
     key   TEXT PRIMARY KEY,
     value TEXT NOT NULL DEFAULT ''
   );
-`);
+`;
 
 /** Eski veritabanlarini veri kaybetmeden gunceller. */
-function addColumnIfMissing(table, column, definition) {
-  const columns = db.prepare(`PRAGMA table_info(${table})`).all();
+async function addColumnIfMissing(table, column, definition) {
+  const { rows: columns } = await db.execute(`PRAGMA table_info(${table})`);
   if (!columns.some((current) => current.name === column)) {
-    db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+    await db.execute(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
   }
 }
 
-addColumnIfMissing('products', 'category', "TEXT NOT NULL DEFAULT ''");
-addColumnIfMissing('products', 'description', "TEXT NOT NULL DEFAULT ''");
-addColumnIfMissing('products', 'images', "TEXT NOT NULL DEFAULT '[]'");
+async function seedDefaultProducts() {
+  const statements = DEFAULT_PRODUCTS.map((product) => ({
+    sql: `INSERT OR IGNORE INTO products
+      (code, name, category, description, price, in_stock, images, fabrics, sizes, colors, sleeves, closures)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [
+      product.code,
+      product.name,
+      product.category,
+      product.description,
+      product.price,
+      product.inStock ? 1 : 0,
+      JSON.stringify(product.images),
+      JSON.stringify(product.fabrics),
+      JSON.stringify(product.sizes),
+      JSON.stringify(product.colors),
+      JSON.stringify(product.sleeves),
+      JSON.stringify(product.closures),
+    ],
+  }));
+  await db.batch(statements, 'write');
+}
+
+async function initializeDatabase() {
+  await db.executeMultiple(SCHEMA);
+  await addColumnIfMissing('products', 'category', "TEXT NOT NULL DEFAULT ''");
+  await addColumnIfMissing('products', 'description', "TEXT NOT NULL DEFAULT ''");
+  await addColumnIfMissing('products', 'images', "TEXT NOT NULL DEFAULT '[]'");
+  await seedDefaultProducts();
+}
+
+export const databaseReady = initializeDatabase();

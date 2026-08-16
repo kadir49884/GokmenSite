@@ -1,4 +1,4 @@
-import { db } from './db.js';
+import { databaseReady, db } from './db.js';
 import { badRequest, notFound } from './http-error.js';
 import { getProduct } from './products.js';
 
@@ -13,8 +13,8 @@ const OPTION_FIELDS = {
   closure: { source: 'closures', label: 'Kapanma şekli' },
 };
 
-export function validateRequest(body) {
-  const product = getProduct(Number(body.productId));
+export async function validateRequest(body) {
+  const product = await getProduct(Number(body.productId));
   if (!product) throw notFound('Ürün bulunamadı.');
 
   const customerName = String(body.customerName ?? '').trim();
@@ -45,32 +45,57 @@ export function validateRequest(body) {
   return request;
 }
 
-export function createRequest(request) {
-  const { lastInsertRowid } = db
-    .prepare(
-      `INSERT INTO requests (product_id, customer_name, phone, fabric, size, color, sleeve, closure, quantity, note)
-       VALUES (@product_id, @customer_name, @phone, @fabric, @size, @color, @sleeve, @closure, @quantity, @note)`,
-    )
-    .run(request);
-  return db.prepare('SELECT * FROM requests WHERE id = ?').get(lastInsertRowid);
+export async function createRequest(request) {
+  await databaseReady;
+  const result = await db.execute({
+    sql: `INSERT INTO requests
+      (product_id, customer_name, phone, fabric, size, color, sleeve, closure, quantity, note)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [
+      request.product_id,
+      request.customer_name,
+      request.phone,
+      request.fabric,
+      request.size,
+      request.color,
+      request.sleeve,
+      request.closure,
+      request.quantity,
+      request.note,
+    ],
+  });
+  const created = await db.execute({
+    sql: 'SELECT * FROM requests WHERE id = ?',
+    args: [Number(result.lastInsertRowid)],
+  });
+  return created.rows[0];
 }
 
-export function listRequests({ status = '' } = {}) {
-  return db
-    .prepare(
-      `SELECT r.*, p.code AS product_code, p.name AS product_name
-       FROM requests r JOIN products p ON p.id = r.product_id
-       WHERE @status = '' OR r.status = @status
-       ORDER BY r.created_at DESC, r.id DESC`,
-    )
-    .all({ status: status.trim() });
+export async function listRequests({ status = '' } = {}) {
+  await databaseReady;
+  const value = status.trim();
+  const { rows } = await db.execute({
+    sql: `SELECT r.*, p.code AS product_code, p.name AS product_name
+      FROM requests r JOIN products p ON p.id = r.product_id
+      WHERE ? = '' OR r.status = ?
+      ORDER BY r.created_at DESC, r.id DESC`,
+    args: [value, value],
+  });
+  return rows;
 }
 
-export function updateRequestStatus(id, status) {
+export async function updateRequestStatus(id, status) {
   if (!REQUEST_STATUSES.includes(status)) throw badRequest('Geçersiz talep durumu.');
-  return db.prepare('UPDATE requests SET status = ? WHERE id = ?').run(status, id).changes > 0;
+  await databaseReady;
+  const result = await db.execute({
+    sql: 'UPDATE requests SET status = ? WHERE id = ?',
+    args: [status, id],
+  });
+  return result.rowsAffected > 0;
 }
 
-export function deleteRequest(id) {
-  return db.prepare('DELETE FROM requests WHERE id = ?').run(id).changes > 0;
+export async function deleteRequest(id) {
+  await databaseReady;
+  const result = await db.execute({ sql: 'DELETE FROM requests WHERE id = ?', args: [id] });
+  return result.rowsAffected > 0;
 }

@@ -3,20 +3,33 @@
 İş kıyafeti kataloğu ve yönetim paneli. Müşteriler ürünleri görüntüler, seçeneklerini işaretleyip
 **ürün talebi** oluşturur; yönetici ürünleri, talepleri ve site bilgilerini panelden yönetir.
 
-## Kurulum
+## Canlı yayın (Vercel)
+
+Proje Vercel Serverless Functions, Turso ve Vercel Blob ile çalışır. Çalışan site için yerel
+bilgisayarın açık kalması gerekmez.
+
+1. GitHub deposunu Vercel'e bağlayın.
+2. Vercel Marketplace'ten **Turso Cloud** veritabanı oluşturup projeye bağlayın.
+3. Projeye public bir **Vercel Blob** deposu bağlayın.
+4. Vercel ortam değişkenlerine güçlü bir `ADMIN_PASSWORD` ekleyin.
+5. Production deployment başlatın.
+
+Turso entegrasyonu `TURSO_DATABASE_URL` ve `TURSO_AUTH_TOKEN`; Blob entegrasyonu
+`BLOB_READ_WRITE_TOKEN` değişkenlerini otomatik oluşturur. İlk istekte tablolar ve 4 örnek ürün
+otomatik hazırlanır.
+
+Canlı site açıldıktan sonra `/admin.html` adresinden giriş yapıp **Site Bilgileri** sekmesini
+doldurun. Telefon ve WhatsApp numarası boş olduğu sürece iletişim butonları görünmez.
+
+## İsteğe bağlı geliştirme ortamı
 
 ```bash
 npm install
-copy .env.example .env   # ADMIN_PASSWORD değerini değiştirin
-npm run seed             # örnek ürünleri ekler (isteğe bağlı)
+copy .env.example .env
 npm start
 ```
 
-- Site: http://localhost:3000
-- Yönetim paneli: http://localhost:3000/admin.html (varsayılan şifre: `admin123`)
-
-İlk iş olarak panelde **Site Bilgileri** sekmesini doldurun. Telefon ve WhatsApp numarası boş olduğu
-sürece iletişim butonları sitede görünmez.
+Turso değişkenleri girilmezse yalnızca geliştirme için `data/bayram.db` kullanılır.
 
 ## Sayfalar
 
@@ -45,17 +58,17 @@ sürece iletişim butonları sitede görünmez.
 | Görseller | /images/onluk-beyaz.png, /images/onluk-lacivert.png |
 
 Çok değerli alanlar panelde **virgülle** ayrılarak girilir. Boş bırakılan alan ürün sayfasında hiç
-gösterilmez; örneğin pantolonda kol tipi sorulmaz. Görselleri panelden yükleyebilirsiniz
-(png, jpg, webp; en fazla 5 MB) veya `public/images/` klasörüne kopyalayıp
-`/images/dosya-adi.png` şeklinde yazabilirsiniz.
+gösterilmez; örneğin pantolonda kol tipi sorulmaz. Panelden yüklenen görseller Vercel Blob'da
+kalıcı olarak saklanır (png, jpg, webp; en fazla 5 MB).
 
 ## Klasörler
 
 ```
-server/         Express API, SQLite erişimi, doğrulama ve dosya yükleme
+api/            Vercel Serverless Function giriş noktası
+server/         Express API, Turso erişimi, doğrulama ve dosya yükleme
 public/         Statik site (vitrin + yönetim paneli)
 public/images/  Ürün fotoğrafları
-data/           SQLite veritabanı (otomatik oluşur)
+data/           Yalnızca yerel geliştirmede kullanılan SQLite veritabanı
 ```
 
 ## API

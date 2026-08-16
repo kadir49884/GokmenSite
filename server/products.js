@@ -1,4 +1,4 @@
-import { db } from './db.js';
+import { databaseReady, db } from './db.js';
 import { badRequest } from './http-error.js';
 
 /** Veritabaninda JSON dizi olarak tutulan alanlar. */
@@ -39,60 +39,95 @@ export function validateProduct(body) {
   return product;
 }
 
-export function listProducts({ search = '', category = '', onlyInStock = false } = {}) {
-  const rows = db
-    .prepare(
-      `SELECT * FROM products
-       WHERE (code LIKE @q OR name LIKE @q)
-         AND (@category = '' OR category = @category)
-         AND (@onlyInStock = 0 OR in_stock = 1)
-       ORDER BY code`,
-    )
-    .all({ q: `%${search.trim()}%`, category: category.trim(), onlyInStock: onlyInStock ? 1 : 0 });
+export async function listProducts({ search = '', category = '', onlyInStock = false } = {}) {
+  await databaseReady;
+  const query = `%${search.trim()}%`;
+  const { rows } = await db.execute({
+    sql: `SELECT * FROM products
+      WHERE (code LIKE ? OR name LIKE ?)
+        AND (? = '' OR category = ?)
+        AND (? = 0 OR in_stock = 1)
+      ORDER BY code`,
+    args: [query, query, category.trim(), category.trim(), onlyInStock ? 1 : 0],
+  });
   return rows.map(toProduct);
 }
 
-export function listCategories() {
-  return db
-    .prepare("SELECT DISTINCT category FROM products WHERE category <> '' ORDER BY category")
-    .all()
-    .map((row) => row.category);
+export async function listCategories() {
+  await databaseReady;
+  const { rows } = await db.execute(
+    "SELECT DISTINCT category FROM products WHERE category <> '' ORDER BY category",
+  );
+  return rows.map((row) => row.category);
 }
 
-export function getProduct(id) {
-  return toProduct(db.prepare('SELECT * FROM products WHERE id = ?').get(id));
+export async function getProduct(id) {
+  await databaseReady;
+  const { rows } = await db.execute({ sql: 'SELECT * FROM products WHERE id = ?', args: [id] });
+  return toProduct(rows[0]);
 }
 
-export function createProduct(product) {
-  if (db.prepare('SELECT 1 FROM products WHERE code = ?').get(product.code)) {
+export async function createProduct(product) {
+  await databaseReady;
+  const existing = await db.execute({ sql: 'SELECT 1 FROM products WHERE code = ?', args: [product.code] });
+  if (existing.rows.length > 0) {
     throw badRequest('Bu ürün kodu zaten kayıtlı.');
   }
-  const { lastInsertRowid } = db
-    .prepare(
-      `INSERT INTO products
-         (code, name, category, description, price, in_stock, images, fabrics, sizes, colors, sleeves, closures)
-       VALUES
-         (@code, @name, @category, @description, @price, @in_stock, @images, @fabrics, @sizes, @colors, @sleeves, @closures)`,
-    )
-    .run(product);
-  return getProduct(lastInsertRowid);
+  const result = await db.execute({
+    sql: `INSERT INTO products
+      (code, name, category, description, price, in_stock, images, fabrics, sizes, colors, sleeves, closures)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [
+      product.code,
+      product.name,
+      product.category,
+      product.description,
+      product.price,
+      product.in_stock,
+      product.images,
+      product.fabrics,
+      product.sizes,
+      product.colors,
+      product.sleeves,
+      product.closures,
+    ],
+  });
+  return getProduct(Number(result.lastInsertRowid));
 }
 
-export function updateProduct(id, product) {
-  const conflict = db.prepare('SELECT 1 FROM products WHERE code = ? AND id <> ?').get(product.code, id);
-  if (conflict) throw badRequest('Bu ürün kodu başka bir üründe kullanılıyor.');
+export async function updateProduct(id, product) {
+  await databaseReady;
+  const conflict = await db.execute({
+    sql: 'SELECT 1 FROM products WHERE code = ? AND id <> ?',
+    args: [product.code, id],
+  });
+  if (conflict.rows.length > 0) throw badRequest('Bu ürün kodu başka bir üründe kullanılıyor.');
 
-  const { changes } = db
-    .prepare(
-      `UPDATE products SET code = @code, name = @name, category = @category, description = @description,
-         price = @price, in_stock = @in_stock, images = @images, fabrics = @fabrics, sizes = @sizes,
-         colors = @colors, sleeves = @sleeves, closures = @closures
-       WHERE id = @id`,
-    )
-    .run({ ...product, id });
-  return changes ? getProduct(id) : null;
+  const result = await db.execute({
+    sql: `UPDATE products SET code = ?, name = ?, category = ?, description = ?,
+      price = ?, in_stock = ?, images = ?, fabrics = ?, sizes = ?, colors = ?, sleeves = ?, closures = ?
+      WHERE id = ?`,
+    args: [
+      product.code,
+      product.name,
+      product.category,
+      product.description,
+      product.price,
+      product.in_stock,
+      product.images,
+      product.fabrics,
+      product.sizes,
+      product.colors,
+      product.sleeves,
+      product.closures,
+      id,
+    ],
+  });
+  return result.rowsAffected > 0 ? getProduct(id) : null;
 }
 
-export function deleteProduct(id) {
-  return db.prepare('DELETE FROM products WHERE id = ?').run(id).changes > 0;
+export async function deleteProduct(id) {
+  await databaseReady;
+  const result = await db.execute({ sql: 'DELETE FROM products WHERE id = ?', args: [id] });
+  return result.rowsAffected > 0;
 }
